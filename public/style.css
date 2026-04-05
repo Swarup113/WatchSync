@@ -217,7 +217,7 @@ body {
   cursor: not-allowed;
 }
 
-/* CHAT PANEL - FIXED FOR MOBILE */
+/* ========== CHAT PANEL - FIXED FOR MOBILE ========== */
 .chat-panel {
   flex: 1.2;
   background: #0e1219dd;
@@ -465,14 +465,14 @@ body {
   color: #a0b0c0;
 }
 
-/* MOBILE RESPONSIVE OVERRIDES */
+/* ========== MOBILE RESPONSIVE OVERRIDES ========== */
 @media (max-width: 780px) {
   .main-layout { 
     flex-direction: column; 
   }
   .chat-panel { 
-    min-height: 280px; 
     flex: 0.8;
+    min-height: 280px;
     max-height: 40vh;
   }
   .video-section { 

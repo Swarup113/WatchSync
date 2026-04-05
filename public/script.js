@@ -23,8 +23,8 @@ function renderJoinScreen() {
         <h2>WatchSync</h2>
         <p style="margin-bottom: 16px;">Watch YouTube together in sync</p>
         <div class="btn-group">
-          <button class="primary-btn" id="createRoomBtn">✨ Create Room</button>
-          <button class="primary-btn" id="joinRoomBtn">🔗 Join Room</button>
+          <button class="primary-btn" id="createRoomBtn"> Create Room</button>
+          <button class="primary-btn" id="joinRoomBtn"> Join Room</button>
         </div>
         <div class="join-footer">
           Made with care by <a href="https://github.com/Swarup113" target="_blank">Swarup Dewanjee</a>
@@ -155,6 +155,13 @@ function renderRoomUI() {
   ui.chatInput = document.getElementById('chatInput');
   ui.sendChatBtn = document.getElementById('sendChatBtn');
   ui.participantsSpan = document.getElementById('participantsList');
+
+  // Safety: ensure chat input area is visible (debug)
+  if (!ui.chatInput || !ui.sendChatBtn) {
+    console.error('Chat elements missing!');
+  } else {
+    console.log('Chat elements found');
+  }
 
   if (ui.roomIdSpan) ui.roomIdSpan.innerText = currentRoomId;
   if (ui.copyBtn) {
@@ -370,18 +377,21 @@ function bindUIEvents() {
     e.preventDefault();
     sendMessage();
   };
-  ui.sendChatBtn.addEventListener('click', sendMessageHandler);
-  ui.sendChatBtn.addEventListener('touchstart', sendMessageHandler);
+  if (ui.sendChatBtn) {
+    ui.sendChatBtn.addEventListener('click', sendMessageHandler);
+    ui.sendChatBtn.addEventListener('touchstart', sendMessageHandler);
+  }
   
-  ui.chatInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      sendMessage();
-    }
-  });
-  
-  ui.chatInput.removeAttribute('readonly');
-  ui.chatInput.disabled = false;
+  if (ui.chatInput) {
+    ui.chatInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+    ui.chatInput.removeAttribute('readonly');
+    ui.chatInput.disabled = false;
+  }
 }
 
 function sendMessage() {

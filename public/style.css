@@ -7,7 +7,7 @@
 html, body {
   height: 100%;
   width: 100%;
-  overflow: hidden; /* Prevents the whole page from scrolling */
+  overflow: hidden; /* Prevents the whole page from bouncing */
 }
 
 body {
@@ -19,9 +19,11 @@ body {
 .app-container {
   display: flex;
   flex-direction: column;
-  height: 100vh; /* Strictly 100% of the viewport height */
+  /* USE 100dvh (Dynamic Viewport Height) for mobile correctness */
+  height: 100dvh; 
   background: radial-gradient(circle at 20% 30%, #11161f, #080b0f);
   position: relative;
+  overflow: hidden;
 }
 
 .header {
@@ -110,10 +112,10 @@ body {
 
 .main-layout {
   display: flex;
-  flex: 1; /* Takes remaining height */
-  overflow: hidden; /* Prevents main container from scrolling */
+  flex: 1; /* Fills space between header and footer */
+  overflow: hidden; /* Prevent main container scroll */
   gap: 0;
-  min-height: 0; /* Critical for Firefox/Flexbox nesting */
+  min-height: 0; 
 }
 
 .video-section {
@@ -121,8 +123,8 @@ body {
   display: flex;
   flex-direction: column;
   padding: 16px 20px 16px 24px;
-  overflow-y: auto; /* Scroll inside this box if content is too tall */
-  min-height: 0; /* Allows flex child to shrink below content size */
+  overflow-y: auto; /* Scroll inside video section */
+  min-height: 0;
 }
 
 .video-wrapper {
@@ -134,7 +136,7 @@ body {
   width: 100%;
   position: relative;
   background: #0f1217;
-  flex-shrink: 0; /* Video player never shrinks */
+  flex-shrink: 0;
 }
 
 #player-container {
@@ -307,7 +309,7 @@ body {
   gap: 10px;
   background: #0a0e14;
   border-top: 1px solid #242e3a;
-  flex-shrink: 0; /* Never shrinks, always visible */
+  flex-shrink: 0; /* CRITICAL: Never shrinks */
   position: relative;
   z-index: 50;
   padding-bottom: calc(12px + env(safe-area-inset-bottom));
@@ -321,7 +323,7 @@ body {
   border-radius: 40px;
   color: white;
   outline: none;
-  font-size: 16px !important;
+  font-size: 16px !important; /* Prevents iOS zoom */
   min-height: 44px;
 }
 
@@ -464,7 +466,7 @@ body {
   font-size: 0.8rem;
   color: #a0b0c0;
   z-index: 10;
-  flex-shrink: 0;
+  flex-shrink: 0; /* Never shrinks, always visible */
 }
 .app-footer a, .join-footer a {
   color: #8aa9ff;
@@ -484,30 +486,41 @@ body {
 
 /* ========== MOBILE RESPONSIVE OVERRIDES ========== */
 @media (max-width: 780px) {
-  .main-layout { 
-    flex-direction: column; 
+  /* Force full height logic */
+  .app-container {
+    height: 100dvh; 
   }
 
-  /* Video Section on Mobile: Takes available space, scrolls internally if needed */
+  .main-layout { 
+    flex-direction: column; 
+    flex: 1; /* Grow to fill space between header and footer */
+    overflow: hidden;
+  }
+
+  /* Video Section: Fills available space */
   .video-section { 
     flex: 1;
     padding: 10px; 
     width: 100%;
-    overflow-y: auto; /* Scroll inside this area */
+    overflow-y: auto;
     min-height: 0;
   }
   
-  /* Chat Panel on Mobile: FIXED HEIGHT at bottom */
+  /* Chat Panel: FIXED HEIGHT */
   .chat-panel { 
-    flex: 0 0 35vh; /* Force 35% of screen height */
-    height: 35vh;
+    /* This is the KEY FIX. 
+       We force a fixed height so it never gets pushed off screen.
+       We set flex-shrink: 0 so the video doesn't crush it.
+    */
+    flex: 0 0 300px; 
+    height: 300px;
+    min-height: 280px;
     width: 100%;
     border-left: none;
     border-top: 1px solid #2a3440;
-    min-height: 200px;
   }
   
-  /* Chat Input Area - Ensure visibility */
+  /* Chat Input Area: Ensure visibility */
   .chat-input-area {
     padding: 10px;
     padding-bottom: calc(10px + env(safe-area-inset-bottom));
@@ -515,7 +528,7 @@ body {
     z-index: 100;
   }
   .chat-input {
-    font-size: 16px !important; /* Prevents iOS zoom */
+    font-size: 16px !important; 
     padding: 10px 14px;
     height: 44px;
   }
@@ -587,10 +600,11 @@ body {
     font-size: 0.8rem; 
   }
   
-  /* Footer is now visible on mobile */
+  /* Ensure Footer is visible */
   .app-footer { 
     display: block;
     padding: 8px 12px;
     font-size: 0.7rem;
+    flex-shrink: 0; /* Ensure it has height */
   }
 }

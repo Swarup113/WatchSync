@@ -7,7 +7,7 @@
 html, body {
   height: 100%;
   width: 100%;
-  overflow: hidden; /* Prevent body bounce */
+  overflow: hidden; /* Prevents the whole page from scrolling */
 }
 
 body {
@@ -19,10 +19,9 @@ body {
 .app-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100vh; /* Strictly 100% of the viewport height */
   background: radial-gradient(circle at 20% 30%, #11161f, #080b0f);
   position: relative;
-  overflow: hidden;
 }
 
 .header {
@@ -36,7 +35,7 @@ body {
   flex-wrap: wrap;
   gap: 12px;
   z-index: 10;
-  flex-shrink: 0;
+  flex-shrink: 0; /* Header never shrinks */
 }
 
 .logo {
@@ -111,11 +110,10 @@ body {
 
 .main-layout {
   display: flex;
-  flex: 1;
-  overflow: hidden;
+  flex: 1; /* Takes remaining height */
+  overflow: hidden; /* Prevents main container from scrolling */
   gap: 0;
-  min-height: 0; 
-  position: relative;
+  min-height: 0; /* Critical for Firefox/Flexbox nesting */
 }
 
 .video-section {
@@ -123,8 +121,8 @@ body {
   display: flex;
   flex-direction: column;
   padding: 16px 20px 16px 24px;
-  overflow-y: auto;
-  min-height: 0;
+  overflow-y: auto; /* Scroll inside this box if content is too tall */
+  min-height: 0; /* Allows flex child to shrink below content size */
 }
 
 .video-wrapper {
@@ -136,7 +134,7 @@ body {
   width: 100%;
   position: relative;
   background: #0f1217;
-  flex-shrink: 0;
+  flex-shrink: 0; /* Video player never shrinks */
 }
 
 #player-container {
@@ -233,6 +231,15 @@ body {
   cursor: not-allowed;
 }
 
+.helper-text {
+  font-size: 0.7rem;
+  color: #8e9eae;
+  margin-top: 8px;
+  text-align: center;
+  flex-shrink: 0;
+  margin-bottom: 20px;
+}
+
 /* ========== CHAT PANEL ========== */
 .chat-panel {
   flex: 1.2;
@@ -245,6 +252,7 @@ body {
   height: 100%;
   overflow: hidden;
   position: relative;
+  min-height: 0;
 }
 
 .chat-header {
@@ -299,10 +307,9 @@ body {
   gap: 10px;
   background: #0a0e14;
   border-top: 1px solid #242e3a;
-  flex-shrink: 0;
+  flex-shrink: 0; /* Never shrinks, always visible */
   position: relative;
   z-index: 50;
-  /* Safe area for iPhone home bar */
   padding-bottom: calc(12px + env(safe-area-inset-bottom));
 }
 
@@ -397,11 +404,6 @@ body {
   color: white;
   cursor: pointer;
 }
-.error-text {
-  color: #ff8686;
-  margin-top: 12px;
-  font-size: 0.8rem;
-}
 
 /* Name prompt modal */
 .name-modal {
@@ -453,14 +455,6 @@ body {
   pointer-events: none;
 }
 
-.helper-text {
-  font-size: 0.7rem;
-  color: #8e9eae;
-  margin-top: 8px;
-  text-align: center;
-  flex-shrink: 0;
-}
-
 .app-footer {
   background: rgba(10, 14, 20, 0.8);
   backdrop-filter: blur(8px);
@@ -494,34 +488,31 @@ body {
     flex-direction: column; 
   }
 
-  /* --- KEY FIX: VIDEO SECTION --- */
+  /* Video Section on Mobile: Takes available space, scrolls internally if needed */
   .video-section { 
-    /* flex: 0 0 auto means "Don't grow, just fit content" */
-    /* This removes the huge empty space below the video player */
-    flex: 0 0 auto; 
+    flex: 1;
     padding: 10px; 
     width: 100%;
-    overflow-y: visible; /* Allow shadows to show if needed */
+    overflow-y: auto; /* Scroll inside this area */
+    min-height: 0;
   }
   
-  /* --- KEY FIX: CHAT PANEL --- */
+  /* Chat Panel on Mobile: FIXED HEIGHT at bottom */
   .chat-panel { 
-    /* flex: 1 means "Take all remaining height on the screen" */
-    flex: 1;
-    min-height: 200px;
+    flex: 0 0 35vh; /* Force 35% of screen height */
+    height: 35vh;
     width: 100%;
     border-left: none;
     border-top: 1px solid #2a3440;
+    min-height: 200px;
   }
   
-  /* Chat Input Area - Make sure it's always tappable */
+  /* Chat Input Area - Ensure visibility */
   .chat-input-area {
     padding: 10px;
     padding-bottom: calc(10px + env(safe-area-inset-bottom));
     background: #0a0e14;
-    flex-shrink: 0; /* Never shrink */
     z-index: 100;
-    position: relative;
   }
   .chat-input {
     font-size: 16px !important; /* Prevents iOS zoom */
@@ -535,7 +526,7 @@ body {
     flex-shrink: 0;
   }
 
-  /* --- Header Tweaks --- */
+  /* Header Tweaks */
   .header { 
     padding: 8px 12px; 
     gap: 8px;
@@ -548,8 +539,8 @@ body {
     font-size: 0.65rem; 
     padding: 4px 8px; 
     gap: 6px; 
-    flex-wrap: nowrap !important; /* Force single row */
-    overflow-x: auto; /* Allow scroll if too tiny, though we hid text */
+    flex-wrap: nowrap !important; 
+    overflow-x: auto;
     max-width: 100%;
   }
   .room-info span {
@@ -563,7 +554,6 @@ body {
     padding: 4px 8px;
     font-size: 0.6rem;
   }
-  /* Hide text on mobile to save space */
   .desktop-only-text {
     display: none;
   }
@@ -573,7 +563,7 @@ body {
     padding: 2px 6px;
   }
   
-  /* --- Video Controls --- */
+  /* Video Controls */
   .video-controls { 
     padding: 6px 12px; 
     gap: 8px;
@@ -586,6 +576,7 @@ body {
   }
   .url-input-group {
     margin-top: 10px;
+    margin-bottom: 10px;
   }
   .url-input { 
     font-size: 0.8rem; 
@@ -596,7 +587,10 @@ body {
     font-size: 0.8rem; 
   }
   
+  /* Footer is now visible on mobile */
   .app-footer { 
-    display: none; /* Hide footer on mobile to save space for chat */
+    display: block;
+    padding: 8px 12px;
+    font-size: 0.7rem;
   }
 }

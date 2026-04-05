@@ -30,6 +30,7 @@ body {
   flex-wrap: wrap;
   gap: 12px;
   z-index: 10;
+  flex-shrink: 0;
 }
 
 .logo {
@@ -104,6 +105,7 @@ body {
   flex: 1;
   overflow: hidden;
   gap: 0;
+  min-height: 0; /* important for flex children to scroll */
 }
 
 .video-section {
@@ -217,7 +219,7 @@ body {
   cursor: not-allowed;
 }
 
-/* ========== CHAT PANEL - FIXED FOR MOBILE ========== */
+/* ========== CHAT PANEL - FORCED VISIBLE ON MOBILE ========== */
 .chat-panel {
   flex: 1.2;
   background: #0e1219dd;
@@ -294,7 +296,7 @@ body {
   border-radius: 40px;
   color: white;
   outline: none;
-  font-size: 16px !important; /* prevents zoom on iOS */
+  font-size: 16px !important;
   min-height: 44px;
 }
 
@@ -448,6 +450,7 @@ body {
   font-size: 0.8rem;
   color: #a0b0c0;
   z-index: 10;
+  flex-shrink: 0;
 }
 .app-footer a, .join-footer a {
   color: #8aa9ff;
@@ -471,12 +474,14 @@ body {
     flex-direction: column; 
   }
   .chat-panel { 
-    flex: 0.8;
-    min-height: 280px;
-    max-height: 40vh;
+    flex: 0 0 auto;
+    height: 40vh;
+    min-height: 200px;
+    max-height: 45vh;
   }
   .video-section { 
     padding: 12px; 
+    flex: 1;
   }
   .video-controls { 
     padding: 6px 12px; 
@@ -527,7 +532,8 @@ body {
 /* Extra small devices */
 @media (max-width: 480px) {
   .chat-panel {
-    min-height: 240px;
+    height: 35vh;
+    min-height: 180px;
   }
   .send-msg {
     width: 48px;

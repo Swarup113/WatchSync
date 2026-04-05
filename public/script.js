@@ -155,13 +155,11 @@ function renderRoomUI() {
   ui.chatInput = document.getElementById('chatInput');
   ui.sendChatBtn = document.getElementById('sendChatBtn');
   ui.participantsSpan = document.getElementById('participantsList');
+  ui.videoControlsPanel = document.getElementById('videoControlsPanel');
 
-  // Safety: ensure chat input area is visible (debug)
-  if (!ui.chatInput || !ui.sendChatBtn) {
-    console.error('Chat elements missing!');
-  } else {
-    console.log('Chat elements found');
-  }
+  // Debug: log if chat elements exist
+  console.log('Chat input element:', ui.chatInput);
+  console.log('Send button element:', ui.sendChatBtn);
 
   if (ui.roomIdSpan) ui.roomIdSpan.innerText = currentRoomId;
   if (ui.copyBtn) {
@@ -372,14 +370,14 @@ function bindUIEvents() {
     }
   };
   
-  // Robust mobile chat send: bind click, touchstart, and pointer events
-  const sendMessageHandler = (e) => {
-    e.preventDefault();
-    sendMessage();
-  };
+  // Mobile chat send: ensure button and input work
   if (ui.sendChatBtn) {
-    ui.sendChatBtn.addEventListener('click', sendMessageHandler);
-    ui.sendChatBtn.addEventListener('touchstart', sendMessageHandler);
+    const sendHandler = (e) => {
+      e.preventDefault();
+      sendMessage();
+    };
+    ui.sendChatBtn.addEventListener('click', sendHandler);
+    ui.sendChatBtn.addEventListener('touchstart', sendHandler);
   }
   
   if (ui.chatInput) {
@@ -389,15 +387,19 @@ function bindUIEvents() {
         sendMessage();
       }
     });
-    ui.chatInput.removeAttribute('readonly');
     ui.chatInput.disabled = false;
+    ui.chatInput.readOnly = false;
   }
 }
 
 function sendMessage() {
+  if (!ui.chatInput) {
+    console.error('Chat input not found');
+    return;
+  }
   const text = ui.chatInput.value.trim();
   if (!text || !socket) {
-    console.log('Cannot send empty message');
+    console.log('No message or socket not ready');
     return;
   }
   console.log('Sending message:', text);

@@ -36,7 +36,7 @@ body {
   font-weight: 700;
   font-size: 1.35rem;
   letter-spacing: -0.3px;
-  color: #8aa9ff;  /* solid color matching buttons */
+  color: #8aa9ff;
 }
 
 .room-info {
@@ -72,6 +72,7 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
+  touch-action: manipulation;
 }
 
 .copy-link-btn:hover {
@@ -156,6 +157,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  touch-action: manipulation;
 }
 
 .ctrl-btn:active { transform: scale(0.96); }
@@ -207,6 +209,7 @@ body {
   cursor: pointer;
   transition: 0.2s;
   color: #0a0c10;
+  touch-action: manipulation;
 }
 .load-vid-btn:hover { background: #a0bbff; }
 .load-vid-btn:disabled {
@@ -273,6 +276,8 @@ body {
   gap: 10px;
   background: #0a0e14;
   border-top: 1px solid #242e3a;
+  position: relative;
+  z-index: 10;
 }
 .chat-input {
   flex: 1;
@@ -282,19 +287,26 @@ body {
   border-radius: 30px;
   color: white;
   outline: none;
-  font-size: 0.85rem;
+  font-size: 16px !important; /* Prevents zoom on iOS */
 }
 .send-msg {
   background: #8aa9ff;
   border: none;
-  width: 40px;
+  min-width: 48px;
+  min-height: 48px;
+  width: 48px;
+  height: 48px;
   border-radius: 40px;
   cursor: pointer;
   color: #0a0c10;
+  touch-action: manipulation;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 .send-msg:hover { background: #a0bbff; }
 
-/* Landing page */
+/* Join overlay */
 .join-overlay {
   position: fixed;
   top: 0;
@@ -318,10 +330,7 @@ body {
   text-align: center;
   border: 1px solid #2f3a4b;
 }
-.join-card h2 { 
-  color: #8aa9ff;
-  margin-bottom: 20px;
-}
+.join-card h2 { color: #8aa9ff; margin-bottom: 20px; }
 .join-card input {
   width: 100%;
   padding: 12px;
@@ -346,6 +355,7 @@ body {
   border: none;
   color: #0a0c10;
   cursor: pointer;
+  touch-action: manipulation;
 }
 .primary-btn:hover { background: #a0bbff; }
 .secondary-btn {
@@ -403,6 +413,7 @@ body {
   border: none;
   color: #0a0c10;
   cursor: pointer;
+  touch-action: manipulation;
 }
 .name-modal button:hover { background: #a0bbff; }
 
@@ -444,6 +455,7 @@ body {
   color: #a0b0c0;
 }
 
+/* Mobile responsive & touch improvements */
 @media (max-width: 780px) {
   .main-layout { flex-direction: column; }
   .chat-panel { min-height: 260px; flex: 0.8; }
@@ -456,4 +468,11 @@ body {
   .header { padding: 10px 16px; }
   .logo { font-size: 1rem; }
   .app-footer { font-size: 0.7rem; padding: 8px 12px; }
+  .send-msg { min-width: 44px; min-height: 44px; width: 44px; height: 44px; }
+  .chat-input { font-size: 16px !important; }
+}
+
+/* Additional touch styles */
+.ctrl-btn, .load-vid-btn, .send-msg, .copy-link-btn, .primary-btn, .secondary-btn {
+  -webkit-tap-highlight-color: transparent;
 }

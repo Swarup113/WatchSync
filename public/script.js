@@ -132,7 +132,7 @@ function renderRoomUI() {
           </div>
           <div id="chatMessages" class="messages-area"></div>
           <div class="chat-input-area">
-            <input type="text" id="chatInput" class="chat-input" placeholder="Type a message...">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Type a message..." autocomplete="off">
             <button id="sendChatBtn" class="send-msg"><i class="fas fa-paper-plane"></i></button>
           </div>
         </div>
@@ -348,12 +348,14 @@ function enableHostControls(enabled) {
 
 function bindUIEvents() {
   if (!ui.playPauseBtn) return;
+  
   ui.playPauseBtn.onclick = () => {
     if (!isHost || !player || !playerReady) return;
     const state = player.getPlayerState();
     if (state === YT.PlayerState.PLAYING) player.pauseVideo();
     else player.playVideo();
   };
+  
   ui.loadVideoBtn.onclick = () => {
     if (!isHost) return;
     const url = ui.videoUrlInput.value.trim();
@@ -362,8 +364,21 @@ function bindUIEvents() {
       socket.emit('host-change-video', { roomId: currentRoomId, url, currentTime: 0, isPlaying: false });
     }
   };
-  ui.sendChatBtn.onclick = () => sendMessage();
-  ui.chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+  
+  // Fix for mobile chat: bind both click and touchstart
+  const sendMessageHandler = () => sendMessage();
+  ui.sendChatBtn.addEventListener('click', sendMessageHandler);
+  ui.sendChatBtn.addEventListener('touchstart', sendMessageHandler);
+  
+  ui.chatInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+  
+  ui.chatInput.removeAttribute('readonly');
+  ui.chatInput.disabled = false;
 }
 
 function sendMessage() {
@@ -371,6 +386,7 @@ function sendMessage() {
   if (!text || !socket) return;
   socket.emit('chat-message', { roomId: currentRoomId, text });
   ui.chatInput.value = '';
+  ui.chatInput.focus();
 }
 
 function escapeHtml(str) {

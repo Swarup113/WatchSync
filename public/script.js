@@ -104,7 +104,7 @@ function renderRoomUI() {
         <div class="logo">WatchSync</div>
         <div class="room-info">
           <span><i class="fas fa-hashtag"></i> Room: <span id="roomIdDisplay"></span></span>
-          <button class="copy-link-btn" id="copyInviteBtn"><i class="fas fa-link"></i> Copy link</button>
+          <button class="copy-link-btn" id="copyInviteBtn"><i class="fas fa-link"></i> <span class="desktop-only-text">Copy link</span></button>
           <span id="hostBadgeSpan" class="badge host-badge" style="display: none;"><i class="fas fa-crown"></i> Host</span>
           <span id="guestBadgeSpan" class="badge guest-badge" style="display: none;"><i class="fas fa-user"></i> Guest</span>
         </div>

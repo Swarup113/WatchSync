@@ -9,7 +9,7 @@ body {
   background: #0a0c10;
   color: #eef2ff;
   height: 100vh;
-  overflow: hidden;
+  overflow: hidden; /* Prevent body scroll, handle inside app */
 }
 
 .app-container {
@@ -17,6 +17,7 @@ body {
   flex-direction: column;
   height: 100vh;
   background: radial-gradient(circle at 20% 30%, #11161f, #080b0f);
+  position: relative;
 }
 
 .header {
@@ -38,6 +39,7 @@ body {
   font-size: 1.35rem;
   letter-spacing: -0.3px;
   color: #8aa9ff;
+  white-space: nowrap;
 }
 
 .room-info {
@@ -50,7 +52,7 @@ body {
   font-size: 0.8rem;
   font-weight: 500;
   border: 1px solid #2e3a48;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* Allows wrap on desktop if needed */
 }
 
 .room-id {
@@ -74,6 +76,7 @@ body {
   align-items: center;
   gap: 6px;
   touch-action: manipulation;
+  white-space: nowrap;
 }
 
 .copy-link-btn:hover {
@@ -88,6 +91,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 5px;
+  white-space: nowrap;
 }
 
 .host-badge {
@@ -114,6 +118,7 @@ body {
   flex-direction: column;
   padding: 16px 20px 16px 24px;
   overflow-y: auto;
+  min-height: 0;
 }
 
 .video-wrapper {
@@ -125,6 +130,7 @@ body {
   width: 100%;
   position: relative;
   background: #0f1217;
+  flex-shrink: 0;
 }
 
 #player-container {
@@ -144,6 +150,7 @@ body {
   border-radius: 60px;
   width: 100%;
   border: 1px solid #2c3542;
+  flex-shrink: 0;
 }
 
 .ctrl-btn {
@@ -219,7 +226,7 @@ body {
   cursor: not-allowed;
 }
 
-/* ========== CHAT PANEL - FORCED VISIBLE ON MOBILE ========== */
+/* ========== CHAT PANEL ========== */
 .chat-panel {
   flex: 1.2;
   background: #0e1219dd;
@@ -230,6 +237,7 @@ body {
   min-width: 260px;
   height: 100%;
   overflow: hidden;
+  position: relative;
 }
 
 .chat-header {
@@ -258,6 +266,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  min-height: 0;
 }
 
 .message {
@@ -276,7 +285,7 @@ body {
 }
 .message .text { color: #eef2ff; }
 
-/* CHAT INPUT AREA - ALWAYS VISIBLE AND TAPPABLE */
+/* CHAT INPUT AREA */
 .chat-input-area {
   padding: 12px;
   display: flex;
@@ -285,7 +294,7 @@ body {
   border-top: 1px solid #242e3a;
   flex-shrink: 0;
   position: relative;
-  z-index: 20;
+  z-index: 50; /* High z-index to stay above other elements */
 }
 
 .chat-input {
@@ -473,18 +482,37 @@ body {
   .main-layout { 
     flex-direction: column; 
   }
+
   .chat-panel { 
-    flex: 0 0 auto;
-    height: 40vh;
-    min-height: 200px;
+    flex: 0 0 35vh; 
+    min-height: 180px;
     max-height: 45vh;
+    height: auto; 
   }
+  
+  .chat-input-area {
+    padding: 10px;
+    flex-shrink: 0; 
+    z-index: 50; 
+  }
+  .chat-input {
+    font-size: 16px !important;
+    padding: 10px 14px;
+  }
+  .send-msg {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+  }
+
   .video-section { 
     padding: 12px; 
-    flex: 1;
+    flex: 1; 
+    min-height: 0;
   }
   .video-controls { 
     padding: 6px 12px; 
+    gap: 8px;
   }
   .ctrl-btn { 
     width: 36px; 
@@ -499,45 +527,53 @@ body {
     padding: 0 16px; 
     font-size: 0.8rem; 
   }
-  .room-info { 
-    font-size: 0.7rem; 
-    padding: 4px 10px; 
-    gap: 6px; 
-  }
+
   .header { 
-    padding: 10px 16px; 
+    padding: 8px 12px; 
+    gap: 8px;
   }
   .logo { 
-    font-size: 1rem; 
+    font-size: 1.1rem; 
+  }
+  .room-info { 
+    font-size: 0.65rem; 
+    padding: 4px 8px; 
+    gap: 6px; 
+    flex-wrap: nowrap !important; 
+    overflow: hidden; 
+  }
+  .room-info span {
+    white-space: nowrap;
+  }
+  .room-id {
+    padding: 2px 6px;
+    font-size: 0.7rem;
+  }
+  .copy-link-btn {
+    padding: 4px 8px;
+    font-size: 0.6rem; 
+  }
+  .desktop-only-text {
+    display: none;
+  }
+  
+  .badge {
+    font-size: 0.6rem;
+    padding: 2px 6px;
   }
   .app-footer { 
     font-size: 0.7rem; 
-    padding: 8px 12px; 
-  }
-  /* Ensure chat input area is always at bottom and tappable */
-  .chat-input-area {
-    padding: 10px;
-  }
-  .chat-input {
-    font-size: 16px !important;
-    padding: 10px 14px;
-  }
-  .send-msg {
-    width: 44px;
-    min-width: 44px;
-    height: 44px;
+    padding: 6px 12px; 
   }
 }
 
-/* Extra small devices */
 @media (max-width: 480px) {
   .chat-panel {
-    height: 35vh;
-    min-height: 180px;
+    flex: 0 0 30vh; 
   }
   .send-msg {
-    width: 48px;
-    min-width: 48px;
-    height: 48px;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
   }
 }

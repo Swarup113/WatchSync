@@ -365,8 +365,11 @@ function bindUIEvents() {
     }
   };
   
-  // Fix for mobile chat: bind both click and touchstart
-  const sendMessageHandler = () => sendMessage();
+  // Robust mobile chat send: bind click, touchstart, and pointer events
+  const sendMessageHandler = (e) => {
+    e.preventDefault();
+    sendMessage();
+  };
   ui.sendChatBtn.addEventListener('click', sendMessageHandler);
   ui.sendChatBtn.addEventListener('touchstart', sendMessageHandler);
   
@@ -383,7 +386,11 @@ function bindUIEvents() {
 
 function sendMessage() {
   const text = ui.chatInput.value.trim();
-  if (!text || !socket) return;
+  if (!text || !socket) {
+    console.log('Cannot send empty message');
+    return;
+  }
+  console.log('Sending message:', text);
   socket.emit('chat-message', { roomId: currentRoomId, text });
   ui.chatInput.value = '';
   ui.chatInput.focus();

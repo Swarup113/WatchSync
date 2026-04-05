@@ -105,7 +105,7 @@ body {
   flex: 1;
   overflow: hidden;
   gap: 0;
-  min-height: 0;
+  min-height: 0; /* important for flex children to scroll */
 }
 
 .video-section {
@@ -219,7 +219,7 @@ body {
   cursor: not-allowed;
 }
 
-/* ========== CHAT PANEL - SIMPLIFIED AND FORCED VISIBLE ========== */
+/* ========== CHAT PANEL - FORCED VISIBLE ON MOBILE ========== */
 .chat-panel {
   flex: 1.2;
   background: #0e1219dd;
@@ -276,19 +276,16 @@ body {
 }
 .message .text { color: #eef2ff; }
 
-/* CHAT INPUT AREA - ALWAYS VISIBLE, NO HIDING */
+/* CHAT INPUT AREA - ALWAYS VISIBLE AND TAPPABLE */
 .chat-input-area {
   padding: 12px;
-  display: flex !important;
+  display: flex;
   gap: 10px;
   background: #0a0e14;
   border-top: 1px solid #242e3a;
   flex-shrink: 0;
   position: relative;
   z-index: 20;
-  visibility: visible !important;
-  opacity: 1 !important;
-  height: auto !important;
 }
 
 .chat-input {
@@ -313,7 +310,7 @@ body {
   cursor: pointer;
   color: #0a0c10;
   touch-action: manipulation;
-  display: inline-flex !important;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   font-size: 1.2rem;
@@ -471,7 +468,7 @@ body {
   color: #a0b0c0;
 }
 
-/* ========== MOBILE RESPONSIVE ========== */
+/* ========== MOBILE RESPONSIVE OVERRIDES ========== */
 @media (max-width: 780px) {
   .main-layout { 
     flex-direction: column; 
@@ -480,11 +477,44 @@ body {
     flex: 0 0 auto;
     height: 40vh;
     min-height: 200px;
+    max-height: 45vh;
   }
   .video-section { 
     padding: 12px; 
     flex: 1;
   }
+  .video-controls { 
+    padding: 6px 12px; 
+  }
+  .ctrl-btn { 
+    width: 36px; 
+    height: 36px; 
+    font-size: 1rem; 
+  }
+  .url-input { 
+    font-size: 0.8rem; 
+    padding: 8px 12px; 
+  }
+  .load-vid-btn { 
+    padding: 0 16px; 
+    font-size: 0.8rem; 
+  }
+  .room-info { 
+    font-size: 0.7rem; 
+    padding: 4px 10px; 
+    gap: 6px; 
+  }
+  .header { 
+    padding: 10px 16px; 
+  }
+  .logo { 
+    font-size: 1rem; 
+  }
+  .app-footer { 
+    font-size: 0.7rem; 
+    padding: 8px 12px; 
+  }
+  /* Ensure chat input area is always at bottom and tappable */
   .chat-input-area {
     padding: 10px;
   }
@@ -499,6 +529,7 @@ body {
   }
 }
 
+/* Extra small devices */
 @media (max-width: 480px) {
   .chat-panel {
     height: 35vh;

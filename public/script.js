@@ -142,7 +142,6 @@ function renderRoomUI() {
       </div>
     </div>
   `;
-  
   ui.roomIdSpan = document.getElementById('roomIdDisplay');
   ui.copyBtn = document.getElementById('copyInviteBtn');
   ui.hostBadge = document.getElementById('hostBadgeSpan');
@@ -158,26 +157,9 @@ function renderRoomUI() {
   ui.participantsSpan = document.getElementById('participantsList');
   ui.videoControlsPanel = document.getElementById('videoControlsPanel');
 
-  // FALLBACK: If chat input is missing (e.g., on some mobile browsers), recreate it
-  if (!ui.chatInput || !ui.sendChatBtn) {
-    console.warn('Chat input elements missing, recreating...');
-    const chatPanel = document.querySelector('.chat-panel');
-    if (chatPanel) {
-      // Remove existing input area if any
-      const oldInputArea = chatPanel.querySelector('.chat-input-area');
-      if (oldInputArea) oldInputArea.remove();
-      // Create new input area
-      const newInputArea = document.createElement('div');
-      newInputArea.className = 'chat-input-area';
-      newInputArea.innerHTML = `
-        <input type="text" id="chatInput" class="chat-input" placeholder="Type a message..." autocomplete="off">
-        <button id="sendChatBtn" class="send-msg"><i class="fas fa-paper-plane"></i></button>
-      `;
-      chatPanel.appendChild(newInputArea);
-      ui.chatInput = document.getElementById('chatInput');
-      ui.sendChatBtn = document.getElementById('sendChatBtn');
-    }
-  }
+  // Debug: log if chat elements exist
+  console.log('Chat input element:', ui.chatInput);
+  console.log('Send button element:', ui.sendChatBtn);
 
   if (ui.roomIdSpan) ui.roomIdSpan.innerText = currentRoomId;
   if (ui.copyBtn) {
@@ -388,7 +370,7 @@ function bindUIEvents() {
     }
   };
   
-  // Ensure send button exists
+  // Mobile chat send: ensure button and input work
   if (ui.sendChatBtn) {
     const sendHandler = (e) => {
       e.preventDefault();

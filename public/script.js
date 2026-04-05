@@ -14,6 +14,25 @@ function getYouTubeId(url) {
   return match ? match[1] : null;
 }
 
+// ----- Toast Notifications -----
+function showToast(message, type = 'info') {
+  const container = document.querySelector('.toast-container');
+  if (!container) return;
+  
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `
+    <i class="fas ${type === 'leave' ? 'fa-sign-out-alt' : 'fa-sign-in-alt'}"></i>
+    <span>${message}</span>
+  `;
+  
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
 // ----- Landing Page -----
 function renderJoinScreen() {
   const app = document.getElementById('app');
@@ -21,10 +40,34 @@ function renderJoinScreen() {
     <div class="join-overlay">
       <div class="join-card">
         <h2>WatchSync</h2>
-        <p style="margin-bottom: 16px;">Watch YouTube together in sync</p>
+        <p class="subtitle">Watch YouTube videos in perfect sync with friends anywhere in the world.</p>
+        
+        <div class="features-grid">
+          <div class="feature-item">
+            <div class="feature-icon"><i class="fas fa-sync"></i></div>
+            <div class="feature-title">Real-time Sync</div>
+            <div class="feature-desc">Play, pause, and seek together instantly.</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon"><i class="fas fa-comments"></i></div>
+            <div class="feature-title">Live Chat</div>
+            <div class="feature-desc">Share reactions without leaving the video.</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon"><i class="fas fa-user-shield"></i></div>
+            <div class="feature-title">Host Control</div>
+            <div class="feature-desc">One person leads, everyone else watches.</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon"><i class="fas fa-user-slash"></i></div>
+            <div class="feature-title">No Login Required</div>
+            <div class="feature-desc">Instant access. No accounts or passwords needed.</div>
+          </div>
+        </div>
+
         <div class="btn-group">
-          <button class="primary-btn" id="createRoomBtn"> Create Room</button>
-          <button class="primary-btn" id="joinRoomBtn"> Join Room</button>
+          <button class="primary-btn" id="createRoomBtn">Create Room</button>
+          <button class="primary-btn" id="joinRoomBtn">Join Room</button>
         </div>
         <div class="join-footer">
           Made with care by <a href="https://github.com/Swarup113" target="_blank">Swarup Dewanjee</a>
@@ -44,7 +87,7 @@ function renderJoinScreen() {
   };
 }
 
-// ----- Name prompt for direct link or join -----
+// ----- Name prompt -----
 function promptForName(roomId, callback) {
   const modalDiv = document.createElement('div');
   modalDiv.className = 'name-modal';
@@ -99,6 +142,7 @@ function startRoom(roomId, username) {
 function renderRoomUI() {
   const app = document.getElementById('app');
   app.innerHTML = `
+    <div class="toast-container"></div>
     <div class="app-container">
       <div class="header">
         <div class="logo">WatchSync</div>
@@ -112,6 +156,7 @@ function renderRoomUI() {
       <div class="main-layout">
         <div class="video-section">
           <div class="video-wrapper">
+            <div id="guest-overlay" class="guest-overlay"></div>
             <div id="player-container"></div>
           </div>
           <div id="videoControlsPanel" class="video-controls">
@@ -156,10 +201,7 @@ function renderRoomUI() {
   ui.sendChatBtn = document.getElementById('sendChatBtn');
   ui.participantsSpan = document.getElementById('participantsList');
   ui.videoControlsPanel = document.getElementById('videoControlsPanel');
-
-  // Debug: log if chat elements exist
-  console.log('Chat input element:', ui.chatInput);
-  console.log('Send button element:', ui.sendChatBtn);
+  ui.guestOverlay = document.getElementById('guest-overlay');
 
   if (ui.roomIdSpan) ui.roomIdSpan.innerText = currentRoomId;
   if (ui.copyBtn) {
@@ -195,6 +237,14 @@ function connectSocket(roomId) {
     if (data.videoState && data.videoState.url) {
       loadVideo(data.videoState.url, data.videoState.currentTime, data.videoState.isPlaying);
     }
+  });
+
+  socket.on('user-joined', ({ username }) => {
+    showToast(`${username} joined the room`, 'join');
+  });
+
+  socket.on('user-left', ({ username }) => {
+    showToast(`${username} left the room`, 'leave');
   });
 
   socket.on('participants-update', (participants) => {
@@ -335,19 +385,26 @@ function updateParticipantsUI(participants) {
 }
 
 function enableHostControls(enabled) {
-  if (!ui.videoControlsPanel) return;
+  if (!ui.videoControlsPanel || !ui.guestOverlay) return;
+  
   if (enabled) {
     ui.videoControlsPanel.classList.remove('disabled-ctrl');
     ui.loadVideoBtn.disabled = false;
     ui.videoUrlInput.disabled = false;
     ui.playPauseBtn.disabled = false;
     ui.seekSlider.disabled = false;
+    
+    ui.guestOverlay.style.display = 'none';
+    ui.guestOverlay.style.pointerEvents = 'none';
   } else {
     ui.videoControlsPanel.classList.add('disabled-ctrl');
     ui.loadVideoBtn.disabled = true;
     ui.videoUrlInput.disabled = true;
     ui.playPauseBtn.disabled = true;
     ui.seekSlider.disabled = true;
+    
+    ui.guestOverlay.style.display = 'block';
+    ui.guestOverlay.style.pointerEvents = 'auto';
   }
 }
 
@@ -370,7 +427,6 @@ function bindUIEvents() {
     }
   };
   
-  // Mobile chat send: ensure button and input work
   if (ui.sendChatBtn) {
     const sendHandler = (e) => {
       e.preventDefault();

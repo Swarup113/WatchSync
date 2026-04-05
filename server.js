@@ -63,6 +63,9 @@ io.on('connection', (socket) => {
       videoState: room.currentVideo
     });
     
+    // Notify others that a user joined
+    socket.to(roomId).emit('user-joined', { username: finalUsername });
+
     const participantsList = Array.from(room.participants.values()).map(p => ({ username: p.username, color: p.color, isHost: p.isHost }));
     io.to(roomId).emit('participants-update', participantsList);
     console.log(`${finalUsername} joined room ${roomId} (host: ${isHost})`);
@@ -117,7 +120,14 @@ io.on('connection', (socket) => {
     console.log('User disconnected:', socket.id);
     for (const [roomId, room] of rooms.entries()) {
       if (room.participants.has(socket.id)) {
+        const user = room.participants.get(socket.id);
+        const username = user ? user.username : 'A user';
+        
         room.participants.delete(socket.id);
+        
+        // Notify others that a user left
+        socket.to(roomId).emit('user-left', { username: username });
+
         if (room.hostId === socket.id && room.participants.size > 0) {
           const newHostId = Array.from(room.participants.keys())[0];
           room.hostId = newHostId;

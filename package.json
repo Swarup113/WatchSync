@@ -1,0 +1,16 @@
+{
+  "name": "watch2gether-clone",
+  "version": "1.0.0",
+  "description": "Sync YouTube videos and chat in real-time rooms",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.22.1",
+    "socket.io": "^4.8.3"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

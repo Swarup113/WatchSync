@@ -4,12 +4,16 @@
   box-sizing: border-box;
 }
 
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* Prevent body bounce */
+}
+
 body {
   font-family: 'Inter', sans-serif;
   background: #0a0c10;
   color: #eef2ff;
-  height: 100vh;
-  overflow: hidden; /* Prevent body scroll, handle inside app */
 }
 
 .app-container {
@@ -18,6 +22,7 @@ body {
   height: 100vh;
   background: radial-gradient(circle at 20% 30%, #11161f, #080b0f);
   position: relative;
+  overflow: hidden;
 }
 
 .header {
@@ -52,7 +57,7 @@ body {
   font-size: 0.8rem;
   font-weight: 500;
   border: 1px solid #2e3a48;
-  flex-wrap: wrap; /* Allows wrap on desktop if needed */
+  flex-wrap: wrap;
 }
 
 .room-id {
@@ -109,7 +114,8 @@ body {
   flex: 1;
   overflow: hidden;
   gap: 0;
-  min-height: 0; /* important for flex children to scroll */
+  min-height: 0; 
+  position: relative;
 }
 
 .video-section {
@@ -197,6 +203,7 @@ body {
   margin-top: 12px;
   width: 100%;
   flex-wrap: wrap;
+  flex-shrink: 0;
 }
 .url-input {
   flex: 3;
@@ -294,7 +301,9 @@ body {
   border-top: 1px solid #242e3a;
   flex-shrink: 0;
   position: relative;
-  z-index: 50; /* High z-index to stay above other elements */
+  z-index: 50;
+  /* Safe area for iPhone home bar */
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
 }
 
 .chat-input {
@@ -323,6 +332,7 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 1.2rem;
+  margin-bottom: env(safe-area-inset-bottom);
 }
 .send-msg:hover { background: #a0bbff; }
 .send-msg:active { transform: scale(0.96); }
@@ -448,6 +458,7 @@ body {
   color: #8e9eae;
   margin-top: 8px;
   text-align: center;
+  flex-shrink: 0;
 }
 
 .app-footer {
@@ -483,54 +494,52 @@ body {
     flex-direction: column; 
   }
 
-  .chat-panel { 
-    flex: 0 0 35vh; 
-    min-height: 180px;
-    max-height: 45vh;
-    height: auto; 
+  /* --- KEY FIX: VIDEO SECTION --- */
+  .video-section { 
+    /* flex: 0 0 auto means "Don't grow, just fit content" */
+    /* This removes the huge empty space below the video player */
+    flex: 0 0 auto; 
+    padding: 10px; 
+    width: 100%;
+    overflow-y: visible; /* Allow shadows to show if needed */
   }
   
+  /* --- KEY FIX: CHAT PANEL --- */
+  .chat-panel { 
+    /* flex: 1 means "Take all remaining height on the screen" */
+    flex: 1;
+    min-height: 200px;
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid #2a3440;
+  }
+  
+  /* Chat Input Area - Make sure it's always tappable */
   .chat-input-area {
     padding: 10px;
-    flex-shrink: 0; 
-    z-index: 50; 
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    background: #0a0e14;
+    flex-shrink: 0; /* Never shrink */
+    z-index: 100;
+    position: relative;
   }
   .chat-input {
-    font-size: 16px !important;
+    font-size: 16px !important; /* Prevents iOS zoom */
     padding: 10px 14px;
+    height: 44px;
   }
   .send-msg {
     width: 44px;
     min-width: 44px;
     height: 44px;
+    flex-shrink: 0;
   }
 
-  .video-section { 
-    padding: 12px; 
-    flex: 1; 
-    min-height: 0;
-  }
-  .video-controls { 
-    padding: 6px 12px; 
-    gap: 8px;
-  }
-  .ctrl-btn { 
-    width: 36px; 
-    height: 36px; 
-    font-size: 1rem; 
-  }
-  .url-input { 
-    font-size: 0.8rem; 
-    padding: 8px 12px; 
-  }
-  .load-vid-btn { 
-    padding: 0 16px; 
-    font-size: 0.8rem; 
-  }
-
+  /* --- Header Tweaks --- */
   .header { 
     padding: 8px 12px; 
     gap: 8px;
+    flex-shrink: 0;
   }
   .logo { 
     font-size: 1.1rem; 
@@ -539,8 +548,9 @@ body {
     font-size: 0.65rem; 
     padding: 4px 8px; 
     gap: 6px; 
-    flex-wrap: nowrap !important; 
-    overflow: hidden; 
+    flex-wrap: nowrap !important; /* Force single row */
+    overflow-x: auto; /* Allow scroll if too tiny, though we hid text */
+    max-width: 100%;
   }
   .room-info span {
     white-space: nowrap;
@@ -551,8 +561,9 @@ body {
   }
   .copy-link-btn {
     padding: 4px 8px;
-    font-size: 0.6rem; 
+    font-size: 0.6rem;
   }
+  /* Hide text on mobile to save space */
   .desktop-only-text {
     display: none;
   }
@@ -561,19 +572,31 @@ body {
     font-size: 0.6rem;
     padding: 2px 6px;
   }
-  .app-footer { 
-    font-size: 0.7rem; 
+  
+  /* --- Video Controls --- */
+  .video-controls { 
     padding: 6px 12px; 
+    gap: 8px;
+    margin-top: 10px;
   }
-}
-
-@media (max-width: 480px) {
-  .chat-panel {
-    flex: 0 0 30vh; 
+  .ctrl-btn { 
+    width: 36px; 
+    height: 36px; 
+    font-size: 1rem; 
   }
-  .send-msg {
-    width: 40px;
-    min-width: 40px;
-    height: 40px;
+  .url-input-group {
+    margin-top: 10px;
+  }
+  .url-input { 
+    font-size: 0.8rem; 
+    padding: 8px 12px; 
+  }
+  .load-vid-btn { 
+    padding: 0 16px; 
+    font-size: 0.8rem; 
+  }
+  
+  .app-footer { 
+    display: none; /* Hide footer on mobile to save space for chat */
   }
 }

@@ -510,25 +510,59 @@ body {
 
 .disabled-ctrl { opacity: 0.5; pointer-events: none; }
 
+/* ========== FOOTER STYLING ========== */
+
 .app-footer {
   background: rgba(10, 14, 20, 0.8);
   backdrop-filter: blur(8px);
   border-top: 1px solid #2a3440;
-  padding: 10px 20px;
+  padding: 12px 20px; /* Slightly increased padding */
   text-align: center;
   font-size: 0.8rem;
-  color: #a0b0c0;
+  color: #a0b0c0; /* Gray text for "Made with care by" and "©" */
   z-index: 10;
   flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px; /* Small gap between elements */
+  flex-wrap: wrap; /* Allows wrapping on very small screens */
 }
-.app-footer a, .join-footer a {
-  color: #8aa9ff; text-decoration: none; font-weight: 500;
-}
-.app-footer a:hover, .join-footer a:hover {
-  color: #a0bbff; text-decoration: underline;
-}
-.join-footer { margin-top: 20px; text-align: center; font-size: 0.8rem; color: #a0b0c0; }
 
+.join-footer {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #a0b0c0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+/* Footer Links - Blue Highlight */
+.app-footer a,
+.join-footer a {
+  color: #8aa9ff; 
+  text-decoration: none;
+  font-weight: 600; /* Slightly bolder to stand out */
+  margin: 0 2px; /* Breathing room around the link */
+}
+
+/* Hover Effect */
+.app-footer a:hover,
+.join-footer a:hover {
+  color: #a0bbff;
+  text-decoration: underline;
+}
+
+/* Optional: Make the copyright symbol slightly smaller/subtler */
+.app-footer span, 
+.join-footer span {
+  opacity: 0.8;
+  font-size: 0.9em;
+}
 /* ========== MOBILE ========== */
 @media (max-width: 780px) {
   .app-container { height: 100dvh; }

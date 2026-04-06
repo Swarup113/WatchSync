@@ -69,12 +69,19 @@ function renderJoinScreen() {
           <button class="primary-btn" id="createRoomBtn">Create Room</button>
           <button class="primary-btn" id="joinRoomBtn">Join Room</button>
         </div>
-        <div class="join-footer">
-          Made with care by <a href="https://github.com/Swarup113" target="_blank">Swarup Dewanjee</a>
-        </div>
+        
+        <!-- FOOTER: Friendly text + Blue Link + Dynamic Year -->
+        <footer class="join-footer">
+             © <span id="year-landing"></span>
+            <a href="https://github.com/Swarup113" class="footer-link" target="_blank" rel="noopener noreferrer">Swarup Dewanjee</a>
+        </footer>
       </div>
     </div>
   `;
+  
+  // Update Year
+  document.getElementById("year-landing").textContent = new Date().getFullYear();
+
   document.getElementById('createRoomBtn').onclick = () => {
     const newRoomId = Math.random().toString(36).substring(2, 10);
     window.location.href = `/?room=${newRoomId}`;
@@ -96,12 +103,19 @@ function promptForName(roomId, callback) {
       <h3>Join Room: ${roomId}</h3>
       <input type="text" id="nameModalInput" placeholder="Your name (optional)" autocomplete="off">
       <button id="nameModalSubmit">Join</button>
-      <div class="join-footer" style="margin-top: 16px;">
-        Made with care by <a href="https://github.com/Swarup113" target="_blank">Swarup Dewanjee</a>
-      </div>
+      
+      <!-- FOOTER: Friendly text + Blue Link + Dynamic Year -->
+      <footer class="join-footer" style="margin-top: 16px;">
+          © <span id="year-modal"></span> 
+          <a href="https://github.com/Swarup113" class="footer-link" target="_blank" rel="noopener noreferrer">Swarup Dewanjee</a>
+      </footer>
     </div>
   `;
   document.body.appendChild(modalDiv);
+  
+  // Update Year
+  document.getElementById("year-modal").textContent = new Date().getFullYear();
+
   const input = modalDiv.querySelector('#nameModalInput');
   const btn = modalDiv.querySelector('#nameModalSubmit');
   const handleSubmit = () => {
@@ -182,11 +196,19 @@ function renderRoomUI() {
           </div>
         </div>
       </div>
-      <div class="app-footer">
-        Made with care by <a href="https://github.com/Swarup113" target="_blank">Swarup Dewanjee</a>
-      </div>
+      
+      <!-- FOOTER: Friendly text + Blue Link + Dynamic Year -->
+      <footer class="app-footer">
+          © <span id="year-room"></span>
+          <a href="https://github.com/Swarup113" class="footer-link" target="_blank" rel="noopener noreferrer">Swarup Dewanjee</a>
+      </footer>
     </div>
   `;
+  
+  // Update Year
+  const yearEl = document.getElementById('year-room');
+  if(yearEl) yearEl.textContent = new Date().getFullYear();
+
   ui.roomIdSpan = document.getElementById('roomIdDisplay');
   ui.copyBtn = document.getElementById('copyInviteBtn');
   ui.hostBadge = document.getElementById('hostBadgeSpan');

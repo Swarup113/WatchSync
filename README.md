@@ -57,7 +57,7 @@ MIT
 
 ## Acknowledgements
 
--YouTube IFrame API
+- YouTube IFrame API
 - Socket.io
 - Font Awesome for icons
 - Google Fonts (Inter)
